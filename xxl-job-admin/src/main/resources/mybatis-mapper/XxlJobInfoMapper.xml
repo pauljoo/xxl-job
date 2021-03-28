@@ -68,7 +68,7 @@
 			</if>
 		</trim>
 		ORDER BY id DESC
-		LIMIT #{offset}, #{pagesize}
+		LIMIT #{pagesize} OFFSET #{offset}
 	</select>
 
 	<select id="pageListCount" parameterType="java.util.HashMap" resultType="int">
@@ -87,8 +87,12 @@
 		</trim>
 	</select>
 
-	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" useGeneratedKeys="true" keyProperty="id" >
+	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobInfo" >
+		<selectKey keyProperty="id" resultType="java.lang.Integer" order="BEFORE">
+			SELECT nextval('seq_xxl_job_qrtz_trigger_info')
+		</selectKey>
 		INSERT INTO XXL_JOB_QRTZ_TRIGGER_INFO (
+			id,
 			job_group,
 			job_cron,
 			job_desc,
@@ -108,6 +112,7 @@
 			glue_updatetime,
 			child_jobid
 		) VALUES (
+			#{id},
 			#{jobGroup},
 			#{jobCron},
 			#{jobDesc},

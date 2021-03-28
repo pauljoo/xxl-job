@@ -16,7 +16,7 @@
 		t.id,
 		t.app_name,
 		t.title,
-		t.`order`,
+		t."order",
 		t.address_type,
 		t.address_list
 	</sql>
@@ -24,28 +24,31 @@
 	<select id="findAll" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
 		FROM XXL_JOB_QRTZ_TRIGGER_GROUP AS t
-		ORDER BY t.order ASC
+		ORDER BY t."order" ASC
 	</select>
 
 	<select id="findByAddressType" parameterType="java.lang.Integer" resultMap="XxlJobGroup">
 		SELECT <include refid="Base_Column_List" />
 		FROM XXL_JOB_QRTZ_TRIGGER_GROUP AS t
 		WHERE t.address_type = #{addressType}
-		ORDER BY t.order ASC
+		ORDER BY t."order" ASC
 	</select>
 
-	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" useGeneratedKeys="true" keyProperty="id" >
-		INSERT INTO XXL_JOB_QRTZ_TRIGGER_GROUP ( `app_name`, `title`, `order`, `address_type`, `address_list`)
-		values ( #{appName}, #{title}, #{order}, #{addressType}, #{addressList});
+	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobGroup">
+		<selectKey keyProperty="id" resultType="java.lang.Integer" order="BEFORE">
+			SELECT nextval('seq_xxl_job_qrtz_trigger_group')
+		</selectKey>
+		INSERT INTO XXL_JOB_QRTZ_TRIGGER_GROUP ( id, app_name, title, "order", address_type, address_list)
+		values ( #{id}, #{appName}, #{title}, #{order}, #{addressType}, #{addressList});
 	</insert>
 
 	<update id="update" parameterType="com.xxl.job.admin.core.model.XxlJobGroup" >
 		UPDATE XXL_JOB_QRTZ_TRIGGER_GROUP
-		SET `app_name` = #{appName},
-			`title` = #{title},
-			`order` = #{order},
-			`address_type` = #{addressType},
-			`address_list` = #{addressList}
+		SET app_name = #{appName},
+			title = #{title},
+			"order" = #{order},
+			address_type = #{addressType},
+			address_list = #{addressList}
 		WHERE id = #{id}
 	</update>
 

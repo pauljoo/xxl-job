@@ -23,15 +23,20 @@
 		t.update_time
 	</sql>
 	
-	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobLogGlue" useGeneratedKeys="true" keyProperty="id" >
+	<insert id="save" parameterType="com.xxl.job.admin.core.model.XxlJobLogGlue" >
+		<selectKey keyProperty="id" resultType="java.lang.Integer" order="BEFORE">
+			SELECT nextval('seq_xxl_job_qrtz_trigger_logglue')
+		</selectKey>
 		INSERT INTO XXL_JOB_QRTZ_TRIGGER_LOGGLUE (
-			`job_id`,
-			`glue_type`,
-			`glue_source`,
-			`glue_remark`,
-			`add_time`, 
-			`update_time`
+			id,
+			job_id,
+			glue_type,
+			glue_source,
+			glue_remark,
+			add_time,
+			update_time
 		) VALUES (
+			#{id},
 			#{jobId},
 			#{glueType},
 			#{glueSource},
@@ -56,16 +61,16 @@
 		WHERE id NOT in(
 			SELECT id FROM(
 				SELECT id FROM XXL_JOB_QRTZ_TRIGGER_LOGGLUE
-				WHERE `job_id` = #{jobId}
+				WHERE job_id = #{jobId}
 				ORDER BY update_time desc
-				LIMIT 0, #{limit}
+				LIMIT #{limit} OFFSET 0
 			) t1
-		) AND `job_id` = #{jobId}
+		) AND job_id = #{jobId}
 	</delete>
 	
 	<delete id="deleteByJobId" parameterType="java.lang.Integer" >
 		DELETE FROM XXL_JOB_QRTZ_TRIGGER_LOGGLUE
-		WHERE `job_id` = #{jobId}
+		WHERE job_id = #{jobId}
 	</delete>
 	
 </mapper>
