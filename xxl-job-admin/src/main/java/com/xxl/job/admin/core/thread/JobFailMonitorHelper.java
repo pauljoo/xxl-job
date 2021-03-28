@@ -146,51 +146,51 @@ public class JobFailMonitorHelper {
 	 */
 	private boolean failAlarm(XxlJobInfo info, XxlJobLog jobLog){
 		boolean alarmResult = true;
-
-		// send monitor email
-		if (info!=null && info.getAlarmEmail()!=null && info.getAlarmEmail().trim().length()>0) {
-
-			// alarmContent
-			String alarmContent = "Alarm Job LogId=" + jobLog.getId();
-			if (jobLog.getTriggerCode() != ReturnT.SUCCESS_CODE) {
-				alarmContent += "<br>TriggerMsg=<br>" + jobLog.getTriggerMsg();
-			}
-			if (jobLog.getHandleCode()>0 && jobLog.getHandleCode() != ReturnT.SUCCESS_CODE) {
-				alarmContent += "<br>HandleCode=" + jobLog.getHandleMsg();
-			}
-
-			// email info
-			XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(Integer.valueOf(info.getJobGroup()));
-			String personal = I18nUtil.getString("admin_name_full");
-			String title = I18nUtil.getString("jobconf_monitor");
-			String content = MessageFormat.format(mailBodyTemplate,
-					group!=null?group.getTitle():"null",
-					info.getId(),
-					info.getJobDesc(),
-					alarmContent);
-
-			Set<String> emailSet = new HashSet<String>(Arrays.asList(info.getAlarmEmail().split(",")));
-			for (String email: emailSet) {
-
-				// make mail
-				try {
-					MimeMessage mimeMessage = XxlJobAdminConfig.getAdminConfig().getMailSender().createMimeMessage();
-
-					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-					helper.setFrom(XxlJobAdminConfig.getAdminConfig().getEmailUserName(), personal);
-					helper.setTo(email);
-					helper.setSubject(title);
-					helper.setText(content, true);
-
-					XxlJobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
-				} catch (Exception e) {
-					logger.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
-
-					alarmResult = false;
-				}
-
-			}
-		}
+//
+//		// send monitor email
+//		if (info!=null && info.getAlarmEmail()!=null && info.getAlarmEmail().trim().length()>0) {
+//
+//			// alarmContent
+//			String alarmContent = "Alarm Job LogId=" + jobLog.getId();
+//			if (jobLog.getTriggerCode() != ReturnT.SUCCESS_CODE) {
+//				alarmContent += "<br>TriggerMsg=<br>" + jobLog.getTriggerMsg();
+//			}
+//			if (jobLog.getHandleCode()>0 && jobLog.getHandleCode() != ReturnT.SUCCESS_CODE) {
+//				alarmContent += "<br>HandleCode=" + jobLog.getHandleMsg();
+//			}
+//
+//			// email info
+//			XxlJobGroup group = XxlJobAdminConfig.getAdminConfig().getXxlJobGroupDao().load(Integer.valueOf(info.getJobGroup()));
+//			String personal = I18nUtil.getString("admin_name_full");
+//			String title = I18nUtil.getString("jobconf_monitor");
+//			String content = MessageFormat.format(mailBodyTemplate,
+//					group!=null?group.getTitle():"null",
+//					info.getId(),
+//					info.getJobDesc(),
+//					alarmContent);
+//
+//			Set<String> emailSet = new HashSet<String>(Arrays.asList(info.getAlarmEmail().split(",")));
+//			for (String email: emailSet) {
+//
+//				// make mail
+//				try {
+//					MimeMessage mimeMessage = XxlJobAdminConfig.getAdminConfig().getMailSender().createMimeMessage();
+//
+//					MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
+//					helper.setFrom(XxlJobAdminConfig.getAdminConfig().getEmailUserName(), personal);
+//					helper.setTo(email);
+//					helper.setSubject(title);
+//					helper.setText(content, true);
+//
+//					XxlJobAdminConfig.getAdminConfig().getMailSender().send(mimeMessage);
+//				} catch (Exception e) {
+//					logger.error(">>>>>>>>>>> xxl-job, job fail alarm email send error, JobLogId:{}", jobLog.getId(), e);
+//
+//					alarmResult = false;
+//				}
+//
+//			}
+//		}
 
 		// TODO, custom alarm strategy, such as sms
 
